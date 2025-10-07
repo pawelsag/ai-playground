@@ -18,19 +18,21 @@ if __name__ == "__main__":
     mlp = MLP(3, [4, 4, 1])
 
     
-    while True:
+    for epoch in range(2000):
         # forward pass
         outs = [mlp(x) for x in xs]
         loss = sum([(out - y)**2 for y, out in zip(ys, outs)])
+
+        # backward pass / evaluating grads``
         mlp.zerograd()
         loss.backward()
 
-        print(loss.data)
-        
+        # calculating new weigts
         for p in mlp.parameters():
             p.data += -0.01 * p.grad
 
-        if loss.data < 0.01:
-            break
+        if epoch % 200 == 0:
+            print(f"Epoch {epoch:4d} | loss = {loss.data:.6f}")
 
+    print("\nFinal predictions:")
     print(outs)
